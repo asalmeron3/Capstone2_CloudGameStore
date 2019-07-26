@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info: 
+  title: Inventory Cloud Service
+  description: This is a cloud service that will be used by the Games Store Admin and Retail Edge services. 
+  version: 0.1.1
+  
+servers:
+  - url: http://localhost:4222
+    description: This project is entended to run on your local machine and will not be deployed. Configuration for this service comes from a config server.
+
+paths:
+  /inventory:
+    get:
+      summary: Returns a list of all the inventory in the inventory database.
+      description: A simple service that returns a list of all the inventory
+      responses: 
+        '200':
+          description: Successfully found all inventory
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/inventory_response_body'
+        '400':
+          description: Incorrect api endpoint. To get all the inventory, go to GET /inventory
+      tags:
+        - Inventory
+    post:
+      summary: Creates and returns a inventory with the generated database id and a random advertisment
+      description: A simple service that returns the inventory stored in the database with the generated id.
+      requestBody:
+        required: true
+        description: A JSON of the inventory with all the requierd properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/inventory_post_request_body'
+      responses: 
+        '201':
+          description: Successfully created product
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/inventory_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - Inventory
+    put:
+      summary: Update a product
+      description: A simple service that updates a inventory that is already stored in the database
+      requestBody:
+        required: true
+        description: A JSON of the inventory with all the required properties (inventoryId included)
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/inventory_put_request_body'
+      responses: 
+        '200':
+          description: Successfully updated product
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/inventory_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - Inventory
+  /inventory/{id}:
+    get:
+      summary: Returns a inventory of the given id
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the inventory that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single inventory with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the product
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/inventory_response_body'
+      tags:
+        - Inventory
+    delete:
+      summary: Deletes a inventory with the specified id from the inventory' databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the inventory that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a product
+      responses: 
+        '200':
+          description: Successfully deleted the inventory with id of {id}
+        '400':
+          description: inventory could not be deleted. Use DELETE/inventory/{id} 
+      tags:
+        - Inventory
+
+components:
+  schemas:
+    inventory_post_request_body:
+      type: object
+      properties:
+        inventoryId:
+          type: integer
+        productId:
+          type: integer
+        quantity:
+          type: integer
+      required:
+        - productId
+        - quantity
+    inventory_put_request_body:
+      type: object
+      properties:
+        inventoryId:
+          type: integer
+        productId:
+          type: integer
+        quantity:
+          type: integer
+      required:
+        - InventoryId
+        - productId
+        - quantity
+    inventory_response_body:
+      type: object
+      properties:
+        inventoryId:
+          type: integer
+        productId:
+          type: integer
+        quantity:
+          type: integer

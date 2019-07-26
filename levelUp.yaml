@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info: 
+  title: LevelUp Cloud Service
+  description: This is a cloud service that will be used by the Games Store Admin and Retail Edge services. 
+  version: 0.1.1
+  
+servers:
+  - url: http://localhost:4222
+    description: This project is entended to run on your local machine and will not be deployed. Configuration for this service comes from a config server.
+
+paths:
+  /levelUp:
+    get:
+      summary: Returns a list of all the levelUps in the LevelUp database.
+      description: A simple service that returns a list of all the levelUps
+      responses: 
+        '200':
+          description: Successfully found all LevelUp
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/levelUp_response_body'
+        '400':
+          description: Incorrect api endpoint. To get all the levelUp, go to GET /levelUp
+      tags:
+        - LevelUp
+    post:
+      summary: Creates and returns a LevelUp with the generated database id and a random advertisment
+      description: A simple service that returns the LevelUp stored in the database with the generated id.
+      requestBody:
+        required: true
+        description: A JSON of the LevelUp with all the requierd properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/levelUp_post_request_body'
+      responses: 
+        '201':
+          description: Successfully created levelUp
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/levelUp_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - LevelUp
+    put:
+      summary: Update a levelUp
+      description: A simple service that updates a LevelUp that is already stored in the database
+      requestBody:
+        required: true
+        description: A JSON of the LevelUp with all the required properties (LevelUpId included)
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/levelUp_put_request_body'
+      responses: 
+        '200':
+          description: Successfully updated levelUp
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/levelUp_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - LevelUp
+  /levelUp/{id}:
+    get:
+      summary: Returns a LevelUp of the given id
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the LevelUp that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single LevelUp with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the levelUp
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/levelUp_response_body'
+      tags:
+        - LevelUp
+    delete:
+      summary: Deletes a LevelUp with the specified id from the LevelUp' databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the LevelUp that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a levelUp
+      responses: 
+        '200':
+          description: Successfully deleted the LevelUp with id of {id}
+        '400':
+          description: LevelUp could not be deleted. Use DELETE/levelUp/{id} 
+      tags:
+        - LevelUp
+
+components:
+  schemas:
+    levelUp_post_request_body:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memberDate:
+          type: string
+      required:
+        - customerId
+        - points
+        - memberDate
+    levelUp_put_request_body:
+      type: object
+      properties:
+        levelUpId:
+          type: integer
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memberDate:
+          type: string
+      required:
+        - levelUpId
+        - customerId
+        - points
+        - memberDate
+    levelUp_response_body:
+      type: object
+      properties:
+        levelUpId:
+          type: integer
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memberDate:
+          type: string

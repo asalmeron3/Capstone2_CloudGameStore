@@ -1,0 +1,205 @@
+openapi: 3.0.0
+info: 
+  title: Customer Cloud Service
+  description: This is a cloud service that will be used by the Games Store Admin and Retail Edge services. 
+  version: 0.1.1
+  
+servers:
+  - url: http://localhost:4222
+    description: This project is entended to run on your local machine and will not be deployed. Configuration for this service comes from a config server.
+
+paths:
+  /customers:
+    get:
+      summary: Returns a list of all the customers in the customers database.
+      description: A simple service that returns a list of all the customers
+      responses: 
+        '200':
+          description: Successfully found all customers
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customer_response_body'
+        '400':
+          description: Incorrect api endpoint. To get all tasks, go to GET /tasks
+      tags:
+        - customers
+    post:
+      summary: Creates and returns a customer with the generated database id and a random advertisment
+      description: A simple service that returns the customer stored in the database with the generated id.
+      requestBody:
+        required: true
+        description: A JSON of the customer with all the requierd properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/customer_post_request_body'
+      responses: 
+        '201':
+          description: Successfully created customer
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customer_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - customers
+    put:
+      summary: Update a customer
+      description: A simple service that updates a customer that is already stored in the database
+      requestBody:
+        required: true
+        description: A JSON of the task with all the required properties (id included)
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/customer_put_request_body'
+      responses: 
+        '200':
+          description: Successfully updated customer
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customer_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - customers
+  /customers/{id}:
+    get:
+      summary: Returns a customer of the given id
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the customer that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single customer with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the customer
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customer_response_body'
+      tags:
+        - customers
+    delete:
+      summary: Deletes a customers with the specified id from the customers' databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the customer that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a customer
+      responses: 
+        '200':
+          description: Successfully deleted the customer with id of {id}
+        '400':
+          description: customer could not be deleted. Use DELETE/customers/{id} 
+      tags:
+        - customers
+
+components:
+  schemas:
+    customer_post_request_body:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        zip:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          maxLength: 75
+        phone:
+          type: string
+          maxLength: 20
+      required:
+        - firstName
+        - lastName
+        - street
+        - city
+        - zip
+        - email
+        - phone
+    customer_put_request_body:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        zip:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          maxLength: 75
+        phone:
+          type: string
+          maxLength: 20
+      required:
+        - id
+        - firstName
+        - lastName
+        - street
+        - city
+        - zip
+        - email
+        - phone
+    customer_response_body:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        zip:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          maxLength: 75
+        phone:
+          type: string
+          maxLength: 20

@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info: 
+  title: Product Cloud Service
+  description: This is a cloud service that will be used by the Games Store Admin and Retail Edge services. 
+  version: 0.1.1
+  
+servers:
+  - url: http://localhost:4111
+    description: This project is entended to run on your local machine and will not be deployed. Configuration for this service comes from a config server.
+
+paths:
+  /products:
+    get:
+      summary: Returns a list of all the products in the products database.
+      description: A simple service that returns a list of all the products
+      responses: 
+        '200':
+          description: Successfully found all products
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/product_response_body'
+        '400':
+          description: Incorrect api endpoint. To get all tasks, go to GET /tasks
+      tags:
+        - Products
+    post:
+      summary: Creates and returns a product with the generated database id and a random advertisment
+      description: A simple service that returns the product stored in the database with the generated id.
+      requestBody:
+        required: true
+        description: A JSON of the product with all the requierd properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/product_post_request_body'
+      responses: 
+        '201':
+          description: Successfully created product
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/product_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - Products
+    put:
+      summary: Update a product
+      description: A simple service that updates a product that is already stored in the database
+      requestBody:
+        required: true
+        description: A JSON of the task with all the required properties (id included)
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/product_put_request_body'
+      responses: 
+        '200':
+          description: Successfully updated product
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/product_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - Products
+  /products/{id}:
+    get:
+      summary: Returns a products of the given id
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the product that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single product with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the product
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/product_response_body'
+      tags:
+        - Products
+    delete:
+      summary: Deletes a products with the specified id from the products' databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the product that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a product
+      responses: 
+        '200':
+          description: Successfully deleted the product with id of {id}
+        '400':
+          description: Product could not be deleted. Use DELETE/products/{id} 
+      tags:
+        - Products
+
+components:
+  schemas:
+    product_post_request_body:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 11
+        description:
+          type: string
+          maxLength: 50
+        listPrice:
+          type: number
+          maximum: 9999999.99
+        unitCost:
+          type: number
+          maximum: 9999999.99
+      required:
+        - name
+        - description
+        - listPrice
+        - unitCost
+    product_put_request_body:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 11
+        description:
+          type: string
+          maxLength: 50
+        listPrice:
+          type: number
+          maximum: 9999999.99
+        unitCost:
+          type: number
+          maximum: 9999999.99
+      required:
+        - id
+        - name
+        - description
+        - listPrice
+        - unitCost
+    product_response_body:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 11
+        description:
+          type: string
+          maxLength: 50
+        listPrice:
+          type: number
+          maximum: 9999999.99
+        unitCost:
+          type: number
+          maximum: 9999999.99
