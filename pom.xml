@@ -17,6 +17,10 @@
 
     <modules>
         <module>gamestore-product-service</module>
+        <module>gamestore-invoice-service</module>
+        <module>gamestore-customer-service</module>
+        <module>gamestore-level-up-service</module>
+        <module>gamestore-inventory-service</module>
     </modules>
 
 
