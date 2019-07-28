@@ -4,6 +4,7 @@ import com.capstone2.gamestoreproductservice.dao.ProductDaoJdbcTemplateImpl;
 import com.capstone2.gamestoreproductservice.exception.NotFoundException;
 import com.capstone2.gamestoreproductservice.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.OptionalDouble;
 
+@RefreshScope
 @RestController
 @RequestMapping("/products")
 public class ProductController {
