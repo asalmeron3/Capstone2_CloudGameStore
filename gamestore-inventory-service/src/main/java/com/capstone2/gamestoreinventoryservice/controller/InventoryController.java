@@ -4,12 +4,14 @@ import com.capstone2.gamestoreinventoryservice.dao.InventoryDaoJdbcTemplateImpl;
 import com.capstone2.gamestoreinventoryservice.exception.NotFoundException;
 import com.capstone2.gamestoreinventoryservice.model.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@RefreshScope
 @RestController
 @RequestMapping("/inventory")
 public class InventoryController {

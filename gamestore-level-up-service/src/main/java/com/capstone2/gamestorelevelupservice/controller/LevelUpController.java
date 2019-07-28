@@ -4,12 +4,14 @@ import com.capstone2.gamestorelevelupservice.dao.LevelUpDaoJdbcTemplateImpl;
 import com.capstone2.gamestorelevelupservice.exception.NotFoundException;
 import com.capstone2.gamestorelevelupservice.model.LevelUp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@RefreshScope
 @RestController
 @RequestMapping("/levelUp")
 public class LevelUpController {

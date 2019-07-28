@@ -4,6 +4,7 @@ import com.capstone2.gamestoreinvoiceservice.dao.InvoiceItemDaoJdbcTemplateImpl;
 import com.capstone2.gamestoreinvoiceservice.exception.NotFoundException;
 import com.capstone2.gamestoreinvoiceservice.model.InvoiceItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@RefreshScope
 @RestController
 @RequestMapping("/invoiceItems")
 public class InvoiceItemController {
