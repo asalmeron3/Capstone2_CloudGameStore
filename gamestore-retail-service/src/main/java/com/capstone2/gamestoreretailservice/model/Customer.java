@@ -1,4 +1,4 @@
-package com.capstone2.gamestorecustomerservice.model;
+package com.capstone2.gamestoreretailservice.model;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

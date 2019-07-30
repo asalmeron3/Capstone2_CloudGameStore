@@ -32,6 +32,7 @@ public class InvoiceDaoJdbcTemplateImpl implements InvoiceDao {
     private final static String CREATE_INVOICE = "insert into invoice (customer_id, purchase_date) values (?, ?)";
     private final static String GET_ALL_INVOICES = "select * from invoice";
     private final static String GET_INVOICE = "select * from invoice where invoice_id = ?";
+    private final static String GET_INVOICES_BY_CUSTOMER_ID = "select * from invoice where customer_id = ?";
     private final static String UPDATE_INVOICE =
             "update invoice set customer_id = ?, purchase_date = ? where invoice_id = ?";
     private final static String DELETE_INVOICE = "delete from invoice where invoice_id = ?";
@@ -82,5 +83,14 @@ public class InvoiceDaoJdbcTemplateImpl implements InvoiceDao {
         int rowsDeleted = invoiceJdbc.update(DELETE_INVOICE, invoiceId);
 
         return rowsDeleted == 1 ? successful : unsuccessful;
+    }
+
+    @Override
+    public List<Invoice> getAllInvoicesForCustomerId(int customerId) {
+        try {
+            return invoiceJdbc.query(GET_INVOICES_BY_CUSTOMER_ID, this::mapRowToInvoice, customerId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }

@@ -10,6 +10,8 @@ public interface LevelUpDao {
 
     LevelUp createLevelUp(LevelUp levelUp);
     LevelUp getLevelUpById(int id);
+    LevelUp getLevelUpByCustomerId(int id);
+
 
     String updateLevelUp(LevelUp levelUp);
     String deleteLevelUp(int id);

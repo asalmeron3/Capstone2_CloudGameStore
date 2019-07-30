@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -67,20 +68,20 @@ public class InvoiceControllerTest {
         String invoiceNoPurchaseDateJson = om.writeValueAsString(invoiceNoPurchaseDate);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
+        mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
                 .content(invoiceInfoJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(expectedInvoiceJson));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
+        mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
                 .content(invoiceNoCustomerIdJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
+        mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
                 .content(invoiceNoPurchaseDateJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -96,12 +97,12 @@ public class InvoiceControllerTest {
 
         String expectedInvoiceJson = om.writeValueAsString(invoiceExpected);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/invoices/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedInvoiceJson));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/0"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/invoices/0"))
                 .andDo(print())
                 .andExpect(content().string(""));
     }
@@ -122,7 +123,7 @@ public class InvoiceControllerTest {
 
         Mockito.when(invoiceDao.getAllInvoices()).thenReturn(allInvoices);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/invoices"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(allInvoicesJson));
@@ -137,12 +138,12 @@ public class InvoiceControllerTest {
         Mockito.when(invoiceDao.deleteInvoice(0)).thenReturn(unsuccessful);
         Mockito.when(invoiceDao.deleteInvoice(1)).thenReturn(successful);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/invoice/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/invoices/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(successful));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/invoice/0"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/invoices/0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(unsuccessful));
@@ -167,25 +168,54 @@ public class InvoiceControllerTest {
         Mockito.when(invoiceDao.updateInvoice(inventoryId4NotFound)).thenReturn(unsuccessful);
         Mockito.when(invoiceDao.updateInvoice(invoiceExpected)).thenReturn(successful);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+        mockMvc.perform(MockMvcRequestBuilders.put("/invoices")
                 .content(invoiceExpectedJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(successful));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+        mockMvc.perform(MockMvcRequestBuilders.put("/invoices")
                 .content(inventory4NotFoundJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(unsuccessful));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+        mockMvc.perform(MockMvcRequestBuilders.put("/invoices")
                 .content(inventoryId0NotAllowedJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testGetAllInvoicesByCustomerId() throws Exception {
+        Invoice invoiceInfo1 = new Invoice(9, LocalDate.of(2019, 07, 27));
+        invoiceInfo1.setInvoiceId(2);
+
+        Invoice invoiceInfo2 = new Invoice(8, LocalDate.of(2019, 07, 27));
+        invoiceInfo2.setInvoiceId(3);
+
+        List<Invoice> invoicesCustomer8 = Arrays.asList(invoiceInfo2);
+        List<Invoice> invoicesCustomer9 = Arrays.asList(invoiceInfo1);
+
+        String invoicesCustomer8Json = om.writeValueAsString(invoicesCustomer8);
+        String invoicesCustomer9Json = om.writeValueAsString(invoicesCustomer9);
+
+        Mockito.when(invoiceDao.getAllInvoicesForCustomerId(8)).thenReturn(invoicesCustomer8);
+        Mockito.when(invoiceDao.getAllInvoicesForCustomerId(9)).thenReturn(invoicesCustomer9);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/invoices/customer/8"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(invoicesCustomer8Json));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/invoices/customer/9"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(invoicesCustomer9Json));
     }
 }

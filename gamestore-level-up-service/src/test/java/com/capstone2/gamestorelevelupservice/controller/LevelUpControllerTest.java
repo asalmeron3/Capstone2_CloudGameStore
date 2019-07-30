@@ -199,4 +199,31 @@ public class LevelUpControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    public void testGetLevelUpByCustomerId() throws Exception {
+        LevelUp levelUp1 = new LevelUp(4, 5,LocalDate.of(2017, 07, 26));
+        levelUp1.setLevelUpId(2);
+
+        LevelUp levelUp2 = new LevelUp(7, 2,LocalDate.of(2017, 07, 26));
+        levelUp2.setLevelUpId(3);
+
+        String levelUp1Json = om.writeValueAsString(levelUp1);
+        String levelUp2Json = om.writeValueAsString(levelUp2);
+
+
+        Mockito.when(levelUpDao.getLevelUpByCustomerId(4)).thenReturn(levelUp1);
+        Mockito.when(levelUpDao.getLevelUpByCustomerId(7)).thenReturn(levelUp2);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/levelUp/customer/4"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(levelUp1Json));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/levelUp/customer/7"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(levelUp2Json));
+    }
 }
