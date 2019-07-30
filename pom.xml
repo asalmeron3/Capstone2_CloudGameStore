@@ -21,6 +21,9 @@
         <module>gamestore-customer-service</module>
         <module>gamestore-level-up-service</module>
         <module>gamestore-inventory-service</module>
+        <module>gamestore-config-server</module>
+        <module>gamestore-eureka-registry</module>
+        <module>gamestore-retail-service</module>
     </modules>
 
 

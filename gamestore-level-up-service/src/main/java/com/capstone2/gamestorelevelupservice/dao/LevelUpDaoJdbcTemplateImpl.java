@@ -37,6 +37,8 @@ public class LevelUpDaoJdbcTemplateImpl implements LevelUpDao {
             "select * from level_up";
     private final static String GET_LEVEL_UP_BY_ID =
             "select * from level_up where level_up_id = ?";
+    private final static String GET_LEVEL_UP_BY_CUSTOMER_ID =
+            "select * from level_up where customer_id = ?";
     private final static String UPDATE_LEVEL_UP =
             "update level_up set customer_id = ?, points = ?, member_date = ? where level_up_id = ?";
     private final static String DELETE_LEVEL_UP =
@@ -91,5 +93,14 @@ public class LevelUpDaoJdbcTemplateImpl implements LevelUpDao {
 
         return rowsDeleted == 1 ? successful : unsuccessful;
 
+    }
+
+    @Override
+    public LevelUp getLevelUpByCustomerId(int id) {
+        try {
+            return levelUpJdbc.queryForObject(GET_LEVEL_UP_BY_CUSTOMER_ID, this::mapRowToLevelUp, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }

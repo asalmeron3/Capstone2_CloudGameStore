@@ -33,6 +33,12 @@ public class LevelUpController {
         return levelUpDao.getLevelUpById(id);
     }
 
+    @GetMapping("/customer/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public LevelUp getLevelUpByCustomerId(@PathVariable int id) {
+        return levelUpDao.getLevelUpByCustomerId(id);
+    }
+
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public String updateLevelUp(@RequestBody @Valid LevelUp levelUp) {

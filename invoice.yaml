@@ -1,0 +1,315 @@
+openapi: 3.0.0
+info:
+  title: Invoice Cloud Service
+  description: This is a cloud service that will be used by the Games Store Admin and Retail Edge services.
+  version: 0.1.1
+
+servers:
+  - url: http://localhost:7002
+    description: This project is entended to run on your local machine and will not be deployed. Configuration for this service comes from a config server.
+
+paths:
+  /invoices:
+    get:
+      summary: Returns a list of all the invoices in the invoices database.
+      description: A simple service that returns a list of all the invoices
+      responses:
+        '200':
+          description: Successfully found all invoices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoice_response_body'
+        '400':
+          description: Incorrect api endpoint. To get all tasks, go to GET /tasks
+      tags:
+        - Invoice
+    post:
+      summary: Creates and returns a invoice with the generated database id and a random advertisment
+      description: A simple service that returns the invoice stored in the database with the generated id.
+      requestBody:
+        required: true
+        description: A JSON of the invoice with all the requierd properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/invoice_post_request_body'
+      responses:
+        '201':
+          description: Successfully created invoice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoice_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - Invoice
+    put:
+      summary: Update a invoice
+      description: A simple service that updates a invoice that is already stored in the database
+      requestBody:
+        required: true
+        description: A JSON of the task with all the required properties (id included)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/invoice_put_request_body'
+      responses:
+        '200':
+          description: Successfully updated invoice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoice_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - Invoice
+  /invoices/{id}:
+    get:
+      summary: Returns a invoice of the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the invoice that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single invoice with the given id in the path
+      responses:
+        '200':
+          description: Successfully found the invoice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoice_response_body'
+      tags:
+        - Invoice
+    delete:
+      summary: Deletes a invoices with the specified id from the invoices' databse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the invoice that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a invoice
+      responses:
+        '200':
+          description: Successfully deleted the invoice with id of {id}
+        '400':
+          description: invoice could not be deleted. Use DELETE/invoices/{id}
+      tags:
+        - Invoice
+  /invoiceItems:
+    get:
+      summary: Returns a list of all the invoiceItems in the invoiceItems database.
+      description: A simple service that returns a list of all the invoiceItems
+      responses:
+        '200':
+          description: Successfully found all invoiceItems
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoiceItem_response_body'
+        '400':
+          description: Incorrect api endpoint. To get all invoiceItems, go to GET /invoiceItems
+      tags:
+        - InvoiceItems
+    post:
+      summary: Creates and returns a invoiceItem with the generated database id and a random advertisment
+      description: A simple service that returns the invoiceItem stored in the database with the generated id.
+      requestBody:
+        required: true
+        description: A JSON of the invoiceItem with all the requierd properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/invoiceItem_post_request_body'
+      responses:
+        '201':
+          description: Successfully created invoice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoiceItem_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - InvoiceItems
+    put:
+      summary: Update a invoiceItem
+      description: A simple service that updates a invoiceItem that is already stored in the database
+      requestBody:
+        required: true
+        description: A JSON of the task with all the required properties (id included)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/invoiceItem_put_request_body'
+      responses:
+        '200':
+          description: Successfully updated invoice
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoiceItem_response_body'
+        '422':
+          description: Request could not be processed; missing a required request body properties
+      tags:
+        - InvoiceItems
+  /invoiceItems/{id}:
+    get:
+      summary: Returns a invoiceItem of the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the invoiceItem that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single invoiceItem with the given id in the path
+      responses:
+        '200':
+          description: Successfully found the invoiceItem
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoiceItem_response_body'
+      tags:
+        - InvoiceItems
+    delete:
+      summary: Deletes an invoiceItem with the specified id from the invoiceItems' databse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the invoiceItem that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a invoiceItem
+      responses:
+        '200':
+          description: Successfully deleted the invoiceItem with id of {id}
+        '400':
+          description: invoiceItem could not be deleted. Use DELETE/invoiceItems/{id}
+      tags:
+        - InvoiceItems
+  /invoiceItems/invoice/{id}:
+    get:
+      summary: Returns a list of  invoiceItems belonging to the specified invoiceId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the invoice of the invoiceItems needed
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a list of  invoiceItems with the given invoice id in the path
+      responses:
+        '200':
+          description: Successfully found the invoiceItems
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/invoiceItem_response_body'
+      tags:
+        - InvoiceItems
+
+components:
+  schemas:
+    invoice_post_request_body:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        purchaseDate:
+          type: string
+          maxLength: 10
+      required:
+        - customerId
+        - purchaseDate
+    invoice_put_request_body:
+      type: object
+      properties:
+        invoiceId:
+          type: integer
+        customerId:
+          type: integer
+        purchaseDate:
+          type: string
+          maxLength: 10
+      required:
+        - invoiceId
+        - customerId
+        - purchaseDate
+    invoice_response_body:
+      type: object
+      properties:
+        invoiceId:
+          type: integer
+        customerId:
+          type: integer
+        purchaseDate:
+          type: string
+          maxLength: 10
+    invoiceItem_post_request_body:
+      type: object
+      properties:
+        invoiceId:
+          type: integer
+        inventoryId:
+          type: integer
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+      required:
+        - invoiceId
+        - inventoryId
+        - quantity
+        - unitPrice
+    invoiceItem_put_request_body:
+      type: object
+      properties:
+        invoiceItemId:
+          type: integer
+        invoiceId:
+          type: integer
+        inventoryId:
+          type: integer
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+      required:
+        - invoiceItemsId
+        - invoiceId
+        - inventoryId
+        - quantity
+        - unitPrice
+    invoiceItem_response_body:
+      type: object
+      properties:
+        invoiceItemId:
+          type: integer
+        invoiceId:
+          type: integer
+        inventoryId:
+          type: integer
+        quantity:
+          type: integer
+        unitPrice:
+          type: number

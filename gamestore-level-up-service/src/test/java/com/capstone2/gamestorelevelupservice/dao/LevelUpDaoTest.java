@@ -94,4 +94,26 @@ public class LevelUpDaoTest {
 
         Assert.assertEquals(2, levelUpDao.getAllLevesUps().size());
     }
+
+    @Test
+    public void getLevelUpByCustomerId() {
+        LevelUp levelUp1 =
+                new LevelUp(5, 10, LocalDate.of(2017, 07, 26));
+        LevelUp levelUp2 =
+                new LevelUp(4, 25, LocalDate.of(2017, 07, 26));
+
+        LevelUp levelUp1Actual = levelUpDao.createLevelUp(levelUp1);
+        LevelUp levelUp2Actual = levelUpDao.createLevelUp(levelUp2);
+
+        int id1 = levelUp1Actual.getLevelUpId();
+        int id2 = levelUp2Actual.getLevelUpId();
+
+        levelUp1.setLevelUpId(id1);
+        levelUp2.setLevelUpId(id2);
+
+        Assert.assertEquals(levelUp1, levelUp1Actual);
+        Assert.assertEquals(levelUp2, levelUp2Actual);
+
+
+    }
 }

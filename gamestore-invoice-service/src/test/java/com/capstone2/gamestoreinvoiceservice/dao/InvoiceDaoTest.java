@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -103,5 +104,25 @@ public class InvoiceDaoTest {
 
         // One added @Before test; 2 within test
         Assert.assertEquals(3, invoiceDao.getAllInvoices().size());
+    }
+
+    @Test
+    public void getAllInvoiceByCutomerId() {
+        Invoice invoice1 = new Invoice(5, LocalDate.of(2019, 07, 26));
+        Invoice invoice2 = new Invoice(4, LocalDate.of(2019, 07, 26));
+        Invoice invoice3 = new Invoice(4, LocalDate.of(2019, 07, 27));
+
+        invoice1 = invoiceDao.createInvoice(invoice1);
+        invoice2 = invoiceDao.createInvoice(invoice2);
+        invoice3 = invoiceDao.createInvoice(invoice3);
+
+        List<Invoice> invoicesCustomer5 = Arrays.asList(invoice1);
+        List<Invoice> invoicesCustomer4 = Arrays.asList(invoice2, invoice3);
+
+        // One invoice for customer 4 was  added in @Before
+        Assert.assertEquals(3, invoiceDao.getAllInvoicesForCustomerId(4).size());
+
+        Assert.assertEquals(1, invoiceDao.getAllInvoicesForCustomerId(5).size());
+
     }
 }
